@@ -1,0 +1,113 @@
+{
+  "name": "rescript-lint-vscode",
+  "displayName": "ReScript Lint",
+  "version": "0.1.0",
+  "description": "ReScript lint diagnostics alongside the official ReScript extension.",
+  "categories": [
+    "Linters"
+  ],
+  "keywords": [
+    "lint",
+    "lsp",
+    "rescript"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jderochervlk/rescript-lint-vscode"
+  },
+  "publisher": "jderochervlk",
+  "type": "module",
+  "main": "./dist/extension.mjs",
+  "scripts": {
+    "tsc": "tsc --noEmit",
+    "build": "node build.config.ts",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check .",
+    "lint": "oxlint --deny-warnings --report-unused-disable-directives",
+    "test": "vitest run",
+    "test:editor": "pnpm build && node smoke.config.ts",
+    "coverage": "vitest run --coverage",
+    "check": "pnpm tsc && pnpm lint && pnpm format:check && pnpm coverage && pnpm build",
+    "vscode:prepublish": "pnpm build",
+    "package": "vsce package --no-dependencies"
+  },
+  "dependencies": {
+    "effect": "^3.22.2",
+    "vscode-languageclient": "^10.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.6",
+    "@types/vscode": "1.125.0",
+    "@vitest/coverage-v8": "^5.0.1",
+    "@vscode/test-electron": "^3.1.0",
+    "@vscode/vsce": "^4.0.0",
+    "esbuild": "^0.28.2",
+    "oxfmt": "^0.68.0",
+    "oxlint": "^1.83.0",
+    "oxlint-tsgolint": "^7.0.2002",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.1"
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "rescriptLint.restart",
+        "title": "Restart Language Server",
+        "category": "ReScript Lint"
+      },
+      {
+        "command": "rescriptLint.showOutput",
+        "title": "Show Output",
+        "category": "ReScript Lint"
+      }
+    ],
+    "configuration": {
+      "title": "ReScript Lint",
+      "properties": {
+        "rescriptLint.enable": {
+          "type": "boolean",
+          "default": true,
+          "scope": "window",
+          "description": "Enable ReScript lint diagnostics. Run ReScript Lint: Restart Language Server after changing settings."
+        },
+        "rescriptLint.serverPath": {
+          "type": "string",
+          "default": "",
+          "scope": "window",
+          "description": "Absolute path to a native rescript-lint executable or its .mjs launcher. Empty uses the workspace npm package, then rescript-lint on PATH. Restart the language server after changing settings."
+        },
+        "rescriptLint.nodePath": {
+          "type": "string",
+          "default": "node",
+          "scope": "window",
+          "description": "Node.js 24+ executable used for .mjs launchers. Restart the language server after changing settings."
+        }
+      }
+    }
+  },
+  "activationEvents": [
+    "onLanguage:rescript"
+  ],
+  "extensionDependencies": [
+    "chenglou92.rescript-vscode"
+  ],
+  "extensionKind": [
+    "workspace"
+  ],
+  "engines": {
+    "node": ">=24",
+    "vscode": "^1.126.0"
+  },
+  "packageManager": "pnpm@11.15.1",
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false,
+      "description": "The linter executes a local program from your trusted workspace."
+    },
+    "virtualWorkspaces": {
+      "supported": false,
+      "description": "The linter requires files on disk."
+    }
+  }
+}
